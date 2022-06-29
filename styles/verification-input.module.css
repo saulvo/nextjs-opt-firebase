@@ -1,0 +1,36 @@
+.box {
+  width: 100%;
+  margin-bottom: 3rem;
+}
+
+.input {
+  overflow: hidden;
+  width: 0;
+  height: 0;
+  border: none;
+  outline: none;
+}
+
+.ul {
+  display: flex;
+  justify-content: space-around;
+  list-style: none;
+}
+
+.li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 5rem;
+  aspect-ratio: 1;
+  border-bottom: 2px solid #ccc;
+
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: var(--primary-color);
+}
+
+.input:focus ~ .ul .li {
+  border-bottom: 2px solid var(--active-color, #ccc);
+}

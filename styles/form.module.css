@@ -1,0 +1,115 @@
+.formWrap {
+  width: 95%;
+  max-width: 480px;
+  border-radius: 1rem;
+  padding: 3rem;
+  margin: auto;
+  background-color: #fff;
+}
+.h1 {
+  font-size: 2.5rem;
+  color: var(--secondary-color);
+  margin: 1.5rem 0;
+}
+
+.banner {
+  width: 100%;
+  max-width: 300px;
+  margin: 5rem auto;
+}
+
+.form {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+}
+
+.wrapInput {
+  position: relative;
+  width: calc(100% - 6rem);
+  font-size: 2.2rem;
+}
+
+.input {
+  height: 4.5rem;
+  width: 100%;
+  border-radius: 0.5rem;
+  border: none;
+  outline: none;
+  font-size: inherit;
+}
+
+.input::placeholder {
+  font-size: 1.8rem;
+}
+
+.line {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+
+  background-color: var(--error-color, #eee);
+}
+
+.line::after {
+  position: absolute;
+  inset: 0;
+  z-index: 9;
+
+  content: '';
+  display: block;
+  width: 100%;
+  height: 100%;
+  background-color: var(--error-color, var(--primary-color));
+  transition: 0.25s ease-in-out;
+  transform: scaleX(0);
+}
+
+.input:focus ~ .line:after {
+  transform: scaleX(1);
+}
+
+.button {
+  margin-top: 2rem;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+
+  font-size: 2rem;
+  font-weight: bold;
+
+  color: #fff;
+  background-color: var(--primary-color);
+}
+
+.author {
+  margin: 2rem 0 0;
+  color: #444;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.author a {
+  color: var(--primary-color);
+}
+
+.author a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 480px) {
+  .formWrap {
+    padding: 1.5rem;
+  }
+}
+
+.errorPhone {
+  color: red;
+  font-size: 1.4rem;
+  margin-top: 0.3em;
+  margin-left: 6rem;
+}

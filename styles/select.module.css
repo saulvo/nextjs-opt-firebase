@@ -1,0 +1,51 @@
+.select {
+  position: relative;
+  width: 5rem;
+  border-radius: 0.3rem;
+
+  font-size: 2.2rem;
+  text-align: center;
+  margin-right: 1rem;
+}
+
+.input {
+  width: 100%;
+  aspect-ratio: 1;
+  border: none;
+  border-radius: 3px 3px 0 0;
+  outline: none;
+  font-size: inherit;
+  text-align: center;
+  color: var(--secondary-color);
+}
+
+.ul {
+  overflow: hidden;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 9;
+
+  width: 100%;
+  border-radius: 0 0 3px 3px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  transform-origin: top;
+  cursor: pointer;
+  transform: rotateX(var(--rotate, 90deg));
+  transition: all 0.25s;
+}
+
+.li {
+  padding: 1rem 0;
+  background-color: #fff;
+}
+
+.li:not(:last-child) {
+  border-bottom: 1px solid #eee;
+}
+
+.liSelect {
+  background-color: red;
+}
