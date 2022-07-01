@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import styles from '../styles/select.module.css';
+import React, { useEffect, useState } from "react";
+import styles from "../styles/select.module.css";
 
 export interface Option {
   value: string;
@@ -15,20 +15,27 @@ const Select: React.FC<Props> = ({ option, onChange }) => {
 
   useEffect(() => {
     window.addEventListener(
-      'click',
+      "click",
       (e: any) => {
-        if (!document.getElementById('select')?.contains(e.target)) {
+        if (!document.getElementById("select")?.contains(e.target)) {
           setIsFocus(false);
         }
       },
-      { passive: true },
+      { passive: true }
     );
   }, []);
 
   return (
-    <div id='select' className={styles.select}>
-      <input className={styles.input} value={option.label} onFocus={() => setIsFocus(true)} />
-      <ul className={styles.ul} style={isFocus ? { ['--rotate' as string]: '0' } : {}}>
+    <div id="select" className={styles.select}>
+      <input
+        className={styles.input}
+        value={option.label}
+        onFocus={() => setIsFocus(true)}
+      />
+      <ul
+        className={styles.ul}
+        style={isFocus ? { ["--rotate" as string]: "0" } : {}}
+      >
         {options.map((option, idx) => (
           <li
             className={styles.li}
@@ -36,7 +43,8 @@ const Select: React.FC<Props> = ({ option, onChange }) => {
             onClick={() => {
               onChange(option);
               setIsFocus(false);
-            }}>
+            }}
+          >
             {option.label}
           </li>
         ))}
@@ -49,11 +57,11 @@ export default Select;
 
 export const options: Option[] = [
   {
-    label: '+84',
-    value: '84',
+    label: "+84",
+    value: "84",
   },
   {
-    label: '+58',
-    value: '58',
+    label: "+58",
+    value: "58",
   },
 ];

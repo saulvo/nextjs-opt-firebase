@@ -1,56 +1,40 @@
-import { initializeApp } from '@firebase/app';
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
-import styles from '../styles/form.module.css';
-import Select, { Option, options } from './Select';
-import VerificationInput from './VerificationInput';
-
-// const firebaseConfig = {
-//   apiKey: process.env.API_KEY,
-//   authDomain: process.env.AUTH_DOMAIN,
-//   projectId: process.env.PROJECT_ID,
-//   storageBucket: process.env.STORAGE_BUCKET,
-//   messagingSenderId: process.env.MESSAGING_SENDER_ID,
-//   appId: process.env.APP_ID,
-// };
-
-const firebaseConfig = {
-  apiKey: 'AIzaSyCO7yJmJFQyLHxFwJV7uizhVX4Kx5UZUCI',
-  authDomain: 'fir-auth-web-b238b.firebaseapp.com',
-  projectId: 'fir-auth-web-b238b',
-  storageBucket: 'fir-auth-web-b238b.appspot.com',
-  messagingSenderId: '632102097661',
-  appId: '1:632102097661:web:b4538e843c7f552069e494',
-};
-
+import {
+  getAuth,
+  RecaptchaVerifier,
+  signInWithPhoneNumber,
+} from "firebase/auth";
+import Image from "next/image";
+import React, { useEffect, useState } from "react";
+import styles from "../styles/form.module.css";
+import Select, { Option, options } from "./Select";
+import VerificationInput from "./VerificationInput";
+import { collection, getFirestore, addDoc } from "firebase/firestore";
 interface Props {
   onSuccess: () => void;
 }
 
 const SignInForm: React.FC<Props> = ({ onSuccess }) => {
-  const [phoneNumber, setPhoneNumber] = useState<string>('');
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
   const [confirmResult, setConfirmResult] = useState<any>();
   const [error, setError] = useState<boolean>(false);
   const [isSend, setIsSend] = useState<boolean>(false);
-  const [verficationCode, setVerificationCode] = useState('');
+  const [verficationCode, setVerificationCode] = useState("");
   const [phoneAreaCode, setPhoneAreaCode] = useState<Option>(options[0]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
   useEffect(() => {
     (async () => {
-      await initializeApp(firebaseConfig);
       const auth = getAuth();
       window.recaptchaVerifier = new RecaptchaVerifier(
-        'recaptcha-container',
+        "recaptcha-container",
         {
-          size: 'invisible',
+          size: "invisible",
           callback: (response: any) => {
             // reCAPTCHA solved, allow signInWithPhoneNumber.
             console.log(response);
           },
         },
-        auth,
+        auth
       );
     })();
   }, []);
@@ -76,38 +60,45 @@ const SignInForm: React.FC<Props> = ({ onSuccess }) => {
       const confirmationResult = await signInWithPhoneNumber(
         auth,
         `${phoneAreaCode.label}${phoneNumber}`,
-        appVerifier,
+        appVerifier
       );
       setConfirmResult(confirmationResult);
       setIsSend(true);
     } catch (error) {
-      console.log('SMS not sent', error);
+      console.log("SMS not sent", error);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleVerifyCode = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleVerifyCode = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (verficationCode.length === 6) {
-      confirmResult
-        .confirm(verficationCode)
-        .then((result: any) => {
-          onSuccess();
-        })
-        .catch((error: any) => {
-          console.log('bad verification code', error);
+      try {
+        const res = await confirmResult.confirm(verficationCode);
+        const user = res.user;
+
+        const db = getFirestore();
+        const colRef: any = collection(db, "users");
+        addDoc(colRef, {
+          username: user.phoneNumber,
+          email: "",
+          profile_picture: "",
         });
+        onSuccess();
+      } catch (error) {
+        console.log("bad verification code", error);
+      }
     } else {
-      alert('Please enter a 6 digit OTP code.');
+      alert("Please enter a 6 digit OTP code.");
     }
   };
 
   return (
     <div className={styles.formWrap}>
       <div className={styles.banner}>
-        <Image src='/welcome.svg' alt='welcome' width={768} height={397} />
+        <Image src="/welcome.svg" alt="welcome" width={768} height={397} />
       </div>
       {!isSend && (
         <>
@@ -116,26 +107,27 @@ const SignInForm: React.FC<Props> = ({ onSuccess }) => {
             <Select option={phoneAreaCode} onChange={setPhoneAreaCode} />
             <div className={styles.wrapInput}>
               <input
-                type='text'
+                type="text"
                 className={styles.input}
-                placeholder='Enter your mobile phone'
+                placeholder="Enter your mobile phone"
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
               />
               <span
                 className={styles.line}
-                style={error ? { ['--error-color' as string]: '#ff0000' } : {}}></span>
+                style={error ? { ["--error-color" as string]: "#ff0000" } : {}}
+              ></span>
             </div>
             {error && (
               <p className={styles.errorPhone}>Invalid phone number!</p>
             )}
             {!isSubmitting && (
-              <button type='submit' className={styles.button}>
+              <button type="submit" className={styles.button}>
                 Next
               </button>
             )}
             {isSubmitting && (
-              <button type='button' className={styles.button}>
+              <button type="button" className={styles.button}>
                 Wait...
               </button>
             )}
@@ -144,16 +136,22 @@ const SignInForm: React.FC<Props> = ({ onSuccess }) => {
       )}
       {isSend && (
         <form onSubmit={handleVerifyCode}>
-          <h1 className={styles.h1}>Enter 6 digit verification code sent to your number</h1>
-          <VerificationInput code={verficationCode} onChange={setVerificationCode} />
-          <button type='submit' className={styles.button}>
+          <h1 className={styles.h1}>
+            Enter 6 digit verification code sent to your number
+          </h1>
+          <VerificationInput
+            code={verficationCode}
+            onChange={setVerificationCode}
+          />
+          <button type="submit" className={styles.button}>
             Verify
           </button>
         </form>
       )}
-      <div id='recaptcha-container'></div>
+      <div id="recaptcha-container"></div>
       <p className={styles.author}>
-        -- Created by&nbsp;<a href='https://github.com/sonvt-fe'>Saul Vo</a>&nbsp;😍 --
+        -- Created by&nbsp;<a href="https://github.com/sonvt-fe">Saul Vo</a>
+        &nbsp;😍 --
       </p>
     </div>
   );
