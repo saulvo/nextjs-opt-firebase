@@ -76,6 +76,7 @@ const SignInForm: React.FC<Props> = ({ onSuccess }) => {
 
     if (verficationCode.length === 6) {
       try {
+        setIsSubmitting(true);
         const res = await confirmResult.confirm(verficationCode);
         const user = res.user;
 
@@ -89,6 +90,8 @@ const SignInForm: React.FC<Props> = ({ onSuccess }) => {
         onSuccess();
       } catch (error) {
         console.log("bad verification code", error);
+      } finally {
+        setIsSubmitting(false);
       }
     } else {
       alert("Please enter a 6 digit OTP code.");
@@ -143,8 +146,11 @@ const SignInForm: React.FC<Props> = ({ onSuccess }) => {
             code={verficationCode}
             onChange={setVerificationCode}
           />
-          <button type="submit" className={styles.button}>
-            Verify
+          <button
+            type={!isSubmitting ? "submit" : "button"}
+            className={styles.button}
+          >
+            {!isSubmitting ? "Verify" : "Wait..."}
           </button>
         </form>
       )}
